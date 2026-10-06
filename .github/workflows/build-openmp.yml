@@ -1,4 +1,4 @@
-name: Build open.mp DM/TDM
+name: Build and package open.mp DM/TDM
 
 on:
   push:
@@ -15,7 +15,7 @@ permissions:
 
 jobs:
   build:
-    name: Compile Pawn gamemode
+    name: Compile and package server
     runs-on: ubuntu-24.04
 
     steps:
@@ -58,5 +58,26 @@ jobs:
           path: |
             gamemodes/dm_tdm.pwn
             gamemodes/dm_tdm.amx
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Assemble minimal Windows and Linux server folders
+        env:
+          OPENMP_VERSION: v1.5.8.3079
+        run: ./scripts/package-server.sh
+
+      - name: Upload complete Windows server
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: openmp-dm-tdm-server-windows-${{ github.sha }}
+          path: dist/windows
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Upload complete Linux server
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: openmp-dm-tdm-server-linux-${{ github.sha }}
+          path: dist/linux
           if-no-files-found: error
           retention-days: 30

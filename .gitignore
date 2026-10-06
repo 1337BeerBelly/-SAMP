@@ -5,6 +5,7 @@
 # Local compiler/toolchain and temporary build output.
 /.tools/
 /build/
+/dist/
 /artifacts/
 
 # Server runtime files and logs.
