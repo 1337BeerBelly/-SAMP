@@ -16,14 +16,14 @@ permissions:
 jobs:
   build:
     name: Compile Pawn gamemode
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout project
-        uses: actions/checkout@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Checkout open.mp Pawn compiler
-        uses: actions/checkout@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: openmultiplayer/compiler
           # openmultiplayer/compiler v3.10.11
@@ -31,7 +31,7 @@ jobs:
           path: .tools/pawn-compiler
 
       - name: Checkout open.mp standard includes
-        uses: actions/checkout@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: openmultiplayer/omp-stdlib
           ref: 689c824f6cc558b1ca1b36cfd1aae7f1cda16d65
@@ -52,7 +52,7 @@ jobs:
           ./scripts/build.sh
 
       - name: Upload source and compiled gamemode
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: openmp-dm-tdm-${{ github.sha }}
           path: |
