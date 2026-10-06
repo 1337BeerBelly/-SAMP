@@ -1,0 +1,62 @@
+name: Build open.mp DM/TDM
+
+on:
+  push:
+    branches:
+      - main
+      - "arena/**"
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Compile Pawn gamemode
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v4
+
+      - name: Checkout open.mp Pawn compiler
+        uses: actions/checkout@v4
+        with:
+          repository: openmultiplayer/compiler
+          # openmultiplayer/compiler v3.10.11
+          ref: 38e9795439fff218fae5096d43c468acc2e513a1
+          path: .tools/pawn-compiler
+
+      - name: Checkout open.mp standard includes
+        uses: actions/checkout@v4
+        with:
+          repository: openmultiplayer/omp-stdlib
+          ref: 689c824f6cc558b1ca1b36cfd1aae7f1cda16d65
+          path: .tools/omp-stdlib
+
+      - name: Build Pawn compiler
+        run: |
+          cmake -S .tools/pawn-compiler/source/compiler \
+            -B .tools/pawn-compiler/build \
+            -DCMAKE_BUILD_TYPE=Release
+          cmake --build .tools/pawn-compiler/build --target pawncc --parallel 2
+
+      - name: Compile gamemode
+        run: |
+          export LD_LIBRARY_PATH="${GITHUB_WORKSPACE}/.tools/pawn-compiler/build${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}"
+          PAWNCC="${GITHUB_WORKSPACE}/.tools/pawn-compiler/build/pawncc" \
+          OMP_INCLUDE_DIR="${GITHUB_WORKSPACE}/.tools/omp-stdlib" \
+          ./scripts/build.sh
+
+      - name: Upload source and compiled gamemode
+        uses: actions/upload-artifact@v4
+        with:
+          name: openmp-dm-tdm-${{ github.sha }}
+          path: |
+            gamemodes/dm_tdm.pwn
+            gamemodes/dm_tdm.amx
+          if-no-files-found: error
+          retention-days: 30

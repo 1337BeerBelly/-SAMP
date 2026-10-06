@@ -1,0 +1,13 @@
+# Generated Pawn binary; CI publishes it together with the source as an artifact.
+/gamemodes/*.amx
+
+# Local compiler/toolchain and temporary build output.
+/.tools/
+/build/
+/artifacts/
+
+# Server runtime files and logs.
+/omp-server*
+/server_log.txt
+/log.txt
+/crashinfo.txt

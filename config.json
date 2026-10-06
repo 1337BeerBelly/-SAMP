@@ -1,0 +1,29 @@
+{
+  "name": "Open.MP DM/TDM",
+  "language": "Russian",
+  "announce": false,
+  "max_players": 50,
+  "network": {
+    "port": 7777
+  },
+  "game": {
+    "map": "San Andreas",
+    "mode": "DM / TDM",
+    "weather": 10
+  },
+  "pawn": {
+    "main_scripts": [
+      "dm_tdm 1"
+    ],
+    "side_scripts": [],
+    "legacy_plugins": []
+  },
+  "rcon": {
+    "enable": false,
+    "password": "replace-this-before-enabling-rcon"
+  },
+  "logging": {
+    "enable": true,
+    "log_chat": true
+  }
+}
