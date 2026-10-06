@@ -9,6 +9,12 @@ on:
     branches:
       - main
   workflow_dispatch:
+    inputs:
+      publish_release:
+        description: Publish Windows and Linux packages as public GitHub release downloads
+        required: true
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -81,3 +87,56 @@ jobs:
           path: dist/linux
           if-no-files-found: error
           retention-days: 30
+
+      - name: Upload archives for public release
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: openmp-dm-tdm-release-assets-${{ github.sha }}
+          path: |
+            dist/release/openmp-dm-tdm-windows.zip
+            dist/release/openmp-dm-tdm-linux.tar.gz
+          if-no-files-found: error
+          retention-days: 30
+
+  publish-release:
+    name: Publish public download links
+    if: >-
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.publish_release == 'true') ||
+      (github.event_name == 'push' && contains(github.event.head_commit.message, '[publish-release]'))
+    needs: build
+    runs-on: ubuntu-24.04
+    permissions:
+      actions: read
+      contents: write
+    steps:
+      - name: Download release assets
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: openmp-dm-tdm-release-assets-${{ github.sha }}
+          path: release-assets
+
+      - name: Publish public GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          RELEASE_TAG="dm-tdm-${GITHUB_SHA:0:12}"
+          RELEASE_TITLE="open.mp DM/TDM server (${GITHUB_SHA:0:7})"
+          RELEASE_NOTES="Minimal open.mp ${OPENMP_VERSION:-v1.5.8.3079} server packages with only the DM/TDM gamemode, its .pwn/.amx files, config.json, and official runtime files. No third-party plugins or components are needed."
+
+          if gh release view "${RELEASE_TAG}" --repo "${GITHUB_REPOSITORY}" >/dev/null 2>&1; then
+            gh release upload "${RELEASE_TAG}" \
+              release-assets/openmp-dm-tdm-windows.zip \
+              release-assets/openmp-dm-tdm-linux.tar.gz \
+              --repo "${GITHUB_REPOSITORY}" --clobber
+          else
+            gh release create "${RELEASE_TAG}" \
+              release-assets/openmp-dm-tdm-windows.zip \
+              release-assets/openmp-dm-tdm-linux.tar.gz \
+              --repo "${GITHUB_REPOSITORY}" \
+              --title "${RELEASE_TITLE}" \
+              --notes "${RELEASE_NOTES}" \
+              --prerelease \
+              --target "${GITHUB_SHA}"
+          fi
+
+          echo "Public release: https://github.com/${GITHUB_REPOSITORY}/releases/tag/${RELEASE_TAG}" >> "${GITHUB_STEP_SUMMARY}"

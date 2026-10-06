@@ -7,7 +7,7 @@ WORK_DIR="${RUNNER_TEMP:-/tmp}/openmp-dm-tdm-${OPENMP_VERSION}"
 DIST_DIR="${DIST_DIR:-${ROOT_DIR}/dist}"
 RELEASE_URL="https://github.com/openmultiplayer/open.mp/releases/download/${OPENMP_VERSION}"
 
-for tool in curl unzip tar find; do
+for tool in curl unzip tar find python3; do
     if ! command -v "${tool}" >/dev/null 2>&1; then
         echo "Required tool not found: ${tool}" >&2
         exit 1
@@ -129,3 +129,22 @@ EOF
 
 assemble_server windows "${WORK_DIR}/windows" omp-server.exe
 assemble_server linux "${WORK_DIR}/linux" omp-server
+
+mkdir -p "${DIST_DIR}/release"
+python3 - "${DIST_DIR}/windows" "${DIST_DIR}/release/openmp-dm-tdm-windows.zip" <<'PY'
+from pathlib import Path
+from sys import argv
+from zipfile import ZIP_DEFLATED, ZipFile
+
+source = Path(argv[1])
+archive_path = Path(argv[2])
+with ZipFile(archive_path, "w", ZIP_DEFLATED) as archive:
+    for path in sorted(source.rglob("*")):
+        if path.is_file():
+            archive.write(path, path.relative_to(source).as_posix())
+PY
+
+tar -czf "${DIST_DIR}/release/openmp-dm-tdm-linux.tar.gz" \
+    -C "${DIST_DIR}/linux" .
+
+echo "Public release assets are ready in ${DIST_DIR}/release"
