@@ -1,5 +1,6 @@
-# Generated Pawn binary; CI publishes it together with the source as an artifact.
+# Generated Pawn binaries are ignored, except the current build kept for direct download.
 /gamemodes/*.amx
+!/gamemodes/dm_tdm.amx
 
 # Local compiler/toolchain and temporary build output.
 /.tools/
