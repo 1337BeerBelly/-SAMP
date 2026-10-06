@@ -3,7 +3,7 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 OPENMP_VERSION="${OPENMP_VERSION:-v1.5.8.3079}"
-WORK_DIR="${RUNNER_TEMP:-/tmp}/openmp-dm-tdm-${OPENMP_VERSION}"
+WORK_DIR="${RUNNER_TEMP:-/tmp}/redline-sa-${OPENMP_VERSION}"
 DIST_DIR="${DIST_DIR:-${ROOT_DIR}/dist}"
 RELEASE_URL="https://github.com/openmultiplayer/open.mp/releases/download/${OPENMP_VERSION}"
 
@@ -82,10 +82,10 @@ assemble_server() {
     cp "${ROOT_DIR}/config.json" "${destination}/config.json"
     cp "${ROOT_DIR}/gamemodes/dm_tdm.pwn" "${destination}/gamemodes/dm_tdm.pwn"
     cp "${ROOT_DIR}/gamemodes/dm_tdm.amx" "${destination}/gamemodes/dm_tdm.amx"
-    cp "${ROOT_DIR}/README.md" "${destination}/README-DM-TDM.md"
+    cp "${ROOT_DIR}/README.md" "${destination}/README-Redline-SA.md"
 
     cat > "${destination}/README-RU.txt" <<EOF
-open.mp DM/TDM — серверный пакет ${OPENMP_VERSION}
+Redline SA — сервер open.mp ${OPENMP_VERSION}
 
 Содержимое:
 - только наш игровой режим: gamemodes/dm_tdm.pwn и gamemodes/dm_tdm.amx;
@@ -135,7 +135,7 @@ assemble_server windows "${WORK_DIR}/windows" omp-server.exe
 assemble_server linux "${WORK_DIR}/linux" omp-server
 
 mkdir -p "${DIST_DIR}/release"
-python3 - "${DIST_DIR}/windows" "${DIST_DIR}/release/openmp-dm-tdm-windows.zip" <<'PY'
+python3 - "${DIST_DIR}/windows" "${DIST_DIR}/release/redline-sa-windows.zip" <<'PY'
 from pathlib import Path
 from sys import argv
 from zipfile import ZIP_DEFLATED, ZipFile
@@ -148,7 +148,7 @@ with ZipFile(archive_path, "w", ZIP_DEFLATED) as archive:
             archive.write(path, path.relative_to(source).as_posix())
 PY
 
-tar -czf "${DIST_DIR}/release/openmp-dm-tdm-linux.tar.gz" \
+tar -czf "${DIST_DIR}/release/redline-sa-linux.tar.gz" \
     -C "${DIST_DIR}/linux" .
 
 echo "Public release assets are ready in ${DIST_DIR}/release"

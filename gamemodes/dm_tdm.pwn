@@ -34,13 +34,13 @@ public OnGameModeInit()
 {
     if (gMatchMode == MATCH_MODE_TDM)
     {
-        SetGameModeText("Team Deathmatch");
-        print("[DM/TDM] Team Deathmatch mode loaded.");
+        SetGameModeText("Redline SA | Team Deathmatch");
+        print("[Redline SA] Team Deathmatch mode loaded.");
     }
     else
     {
-        SetGameModeText("Deathmatch");
-        print("[DM/TDM] Deathmatch mode loaded.");
+        SetGameModeText("Redline SA | Deathmatch");
+        print("[Redline SA] Deathmatch mode loaded.");
     }
 
     AddPlayerClass(0, 1958.3783, 1343.1572, 15.3746, 269.1425, WEAPON_FIST, 0, WEAPON_FIST, 0, WEAPON_FIST, 0);
@@ -72,7 +72,7 @@ public OnPlayerConnect(playerid)
     gPlayerDeaths[playerid] = 0;
 
     AssignPlayerTeam(playerid);
-    SendClientMessage(playerid, COLOR_WHITE, "Welcome to DM/TDM! Type /help for commands.");
+    SendClientMessage(playerid, COLOR_WHITE, "Welcome to Redline SA! Type /help for commands.");
 
     if (gMatchMode == MATCH_MODE_TDM)
     {

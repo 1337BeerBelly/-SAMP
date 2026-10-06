@@ -1,4 +1,4 @@
-name: Build and package open.mp DM/TDM
+name: Build and package Redline SA
 
 on:
   push:
@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
     inputs:
       publish_release:
-        description: Publish Windows and Linux packages as public GitHub release downloads
+        description: Publish Redline SA Windows and Linux packages as public GitHub release downloads
         required: true
         type: boolean
         default: false
@@ -21,7 +21,7 @@ permissions:
 
 jobs:
   build:
-    name: Compile and package server
+    name: Compile and package Redline SA
     runs-on: ubuntu-24.04
 
     steps:
@@ -60,7 +60,7 @@ jobs:
       - name: Upload source and compiled gamemode
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: openmp-dm-tdm-${{ github.sha }}
+          name: redline-sa-source-${{ github.sha }}
           path: |
             gamemodes/dm_tdm.pwn
             gamemodes/dm_tdm.amx
@@ -75,7 +75,7 @@ jobs:
       - name: Upload complete Windows server
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: openmp-dm-tdm-server-windows-${{ github.sha }}
+          name: redline-sa-server-windows-${{ github.sha }}
           path: dist/windows
           if-no-files-found: error
           retention-days: 30
@@ -83,7 +83,7 @@ jobs:
       - name: Upload complete Linux server
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: openmp-dm-tdm-server-linux-${{ github.sha }}
+          name: redline-sa-server-linux-${{ github.sha }}
           path: dist/linux
           if-no-files-found: error
           retention-days: 30
@@ -91,15 +91,15 @@ jobs:
       - name: Upload archives for public release
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: openmp-dm-tdm-release-assets-${{ github.sha }}
+          name: redline-sa-release-assets-${{ github.sha }}
           path: |
-            dist/release/openmp-dm-tdm-windows.zip
-            dist/release/openmp-dm-tdm-linux.tar.gz
+            dist/release/redline-sa-windows.zip
+            dist/release/redline-sa-linux.tar.gz
           if-no-files-found: error
           retention-days: 30
 
   publish-release:
-    name: Publish public download links
+    name: Publish Redline SA download links
     if: >-
       (github.event_name == 'workflow_dispatch' && github.event.inputs.publish_release == 'true') ||
       (github.event_name == 'push' && contains(github.event.head_commit.message, '[publish-release]'))
@@ -112,26 +112,26 @@ jobs:
       - name: Download release assets
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
-          name: openmp-dm-tdm-release-assets-${{ github.sha }}
+          name: redline-sa-release-assets-${{ github.sha }}
           path: release-assets
 
       - name: Publish public GitHub release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          RELEASE_TAG="dm-tdm-${GITHUB_SHA:0:12}"
-          RELEASE_TITLE="open.mp DM/TDM server (${GITHUB_SHA:0:7})"
-          RELEASE_NOTES="Minimal open.mp ${OPENMP_VERSION:-v1.5.8.3079} server packages with the DM/TDM gamemode, its .pwn/.amx files, config.json, and official runtime components. No third-party plugins are needed."
+          RELEASE_TAG="redline-sa-${GITHUB_SHA:0:12}"
+          RELEASE_TITLE="Redline SA (${GITHUB_SHA:0:7})"
+          RELEASE_NOTES="Redline SA is a minimal open.mp DM/TDM server package with our .pwn/.amx gamemode, config.json, and official runtime components. No third-party plugins are needed."
 
           if gh release view "${RELEASE_TAG}" --repo "${GITHUB_REPOSITORY}" >/dev/null 2>&1; then
             gh release upload "${RELEASE_TAG}" \
-              release-assets/openmp-dm-tdm-windows.zip \
-              release-assets/openmp-dm-tdm-linux.tar.gz \
+              release-assets/redline-sa-windows.zip \
+              release-assets/redline-sa-linux.tar.gz \
               --repo "${GITHUB_REPOSITORY}" --clobber
           else
             gh release create "${RELEASE_TAG}" \
-              release-assets/openmp-dm-tdm-windows.zip \
-              release-assets/openmp-dm-tdm-linux.tar.gz \
+              release-assets/redline-sa-windows.zip \
+              release-assets/redline-sa-linux.tar.gz \
               --repo "${GITHUB_REPOSITORY}" \
               --title "${RELEASE_TITLE}" \
               --notes "${RELEASE_NOTES}" \

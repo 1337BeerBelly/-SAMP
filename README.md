@@ -1,6 +1,6 @@
-# open.mp DM/TDM
+# Redline SA
 
-Игровой режим для **open.mp** на Pawn. По умолчанию работает Team Deathmatch: команды RED/BLUE, авто-баланс, счёт, лимит 30 убийств и раунды по 15 минут. В исходнике можно выбрать FFA Deathmatch через `DEFAULT_MATCH_MODE`.
+**Redline SA** — сервер на **open.mp** с режимом DM/TDM на Pawn. По умолчанию работает Team Deathmatch: команды RED/BLUE, авто-баланс, счёт, лимит 30 убийств и раунды по 15 минут. В исходнике можно выбрать FFA Deathmatch через `DEFAULT_MATCH_MODE`.
 
 Режим использует встроенный API open.mp и не требует сторонних плагинов. Координаты арены и набор оружия пока тестовые; системные сообщения в первой сборке на английском.
 
@@ -14,8 +14,8 @@
 
 GitHub Actions собирает два минимальных серверных пакета из официального open.mp runtime `v1.5.8.3079`:
 
-- Windows: `openmp-dm-tdm-server-windows-<commit>`;
-- Linux: `openmp-dm-tdm-server-linux-<commit>`.
+- Windows: `redline-sa-server-windows-<commit>`;
+- Linux: `redline-sa-server-linux-<commit>`.
 
 В архиве находятся сервер open.mp, его штатные компоненты и runtime-файлы, `config.json`, наш `.pwn` и `.amx`, а также скрипт запуска. Примеры игровых режимов, фильтр-скрипты и неиспользуемые плагины удаляются; компоненты из официального runtime сохранены, сторонние плагины для нашего режима не нужны.
 
