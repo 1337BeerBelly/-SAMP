@@ -62,7 +62,7 @@ assemble_server() {
     # sample gamemodes and unused optional content from the distribution.
     rm -rf "${destination}/gamemodes" "${destination}/filterscripts"
     mkdir -p "${destination}/gamemodes" "${destination}/scriptfiles"
-    for optional_dir in components filterscripts models plugins; do
+    for optional_dir in filterscripts models plugins; do
         if [[ -d "${destination}/${optional_dir}" ]]; then
             find "${destination}/${optional_dir}" -mindepth 1 -maxdepth 1 \
                 -exec rm -rf -- {} +
@@ -70,6 +70,10 @@ assemble_server() {
             mkdir -p "${destination}/${optional_dir}"
         fi
     done
+    if [[ ! -d "${destination}/components" ]]; then
+        echo "Official open.mp components directory is missing from the runtime package." >&2
+        return 1
+    fi
     find "${destination}/scriptfiles" -mindepth 1 -maxdepth 1 \
         -exec rm -rf -- {} +
 
@@ -86,10 +90,10 @@ open.mp DM/TDM — серверный пакет ${OPENMP_VERSION}
 Содержимое:
 - только наш игровой режим: gamemodes/dm_tdm.pwn и gamemodes/dm_tdm.amx;
 - конфигурация config.json;
-- официальный сервер open.mp и его стандартные файлы;
-- встроенные include-файлы/инструменты Qawno из официального пакета.
+- официальный сервер open.mp, его штатные компоненты и include-файлы/инструменты Qawno;
+- папки режима, конфигурации и запуска.
 
-Сторонние плагины и компоненты не требуются: режим использует только API open.mp.
+Сторонние плагины не требуются: режим использует API open.mp. Штатные компоненты сервера сохранены.
 Порт сервера: UDP 7777. RCON выключен.
 
 Запуск:

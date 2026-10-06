@@ -121,7 +121,7 @@ jobs:
         run: |
           RELEASE_TAG="dm-tdm-${GITHUB_SHA:0:12}"
           RELEASE_TITLE="open.mp DM/TDM server (${GITHUB_SHA:0:7})"
-          RELEASE_NOTES="Minimal open.mp ${OPENMP_VERSION:-v1.5.8.3079} server packages with only the DM/TDM gamemode, its .pwn/.amx files, config.json, and official runtime files. No third-party plugins or components are needed."
+          RELEASE_NOTES="Minimal open.mp ${OPENMP_VERSION:-v1.5.8.3079} server packages with the DM/TDM gamemode, its .pwn/.amx files, config.json, and official runtime components. No third-party plugins are needed."
 
           if gh release view "${RELEASE_TAG}" --repo "${GITHUB_REPOSITORY}" >/dev/null 2>&1; then
             gh release upload "${RELEASE_TAG}" \
